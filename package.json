@@ -1,0 +1,42 @@
+{
+  "name": "element-preact",
+  "version": "0.0.1",
+  "description": "element ui for preact",
+  "main": "lib/index.js",
+  "scripts": {
+    "tsc": "tsc",
+    "start": "f2e start",
+    "test": "node test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/element-preact/element-preact.git"
+  },
+  "keywords": [
+    "element",
+    "css"
+  ],
+  "author": "shy2850",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/element-preact/element-preact/issues"
+  },
+  "module": "lib/src/index.js",
+  "typings": "lib/src/index.d.ts",
+  "homepage": "https://github.com/element-preact/element-preact#readme",
+  "devDependencies": {
+    "@types/marked": "^0.6.3",
+    "f2e-middle-rollup": "^0.3.3",
+    "f2e-middle-typescript": "^0.3.3",
+    "f2e-server": "^2.9.16",
+    "ipreact": "^0.2.2",
+    "ipreact-router": "^0.5.2",
+    "marked": "^0.6.1",
+    "preact": "^8.4.2",
+    "rollup": "^1.7.0",
+    "rollup-plugin-commonjs": "^9.2.1",
+    "rollup-plugin-node-resolve": "^4.0.1",
+    "rollup-plugin-typescript2": "^0.20.1",
+    "typescript": "^3.3.4000"
+  }
+}
