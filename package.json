@@ -21,6 +21,7 @@
   "bugs": {
     "url": "https://github.com/element-preact/element-preact/issues"
   },
+  "files": ["lib/**", "src/**", "site/**"],
   "module": "lib/src/index.js",
   "typings": "lib/src/index.d.ts",
   "homepage": "https://github.com/element-preact/element-preact#readme",
