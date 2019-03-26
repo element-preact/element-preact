@@ -1,11 +1,14 @@
 {
   "name": "element-preact",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "element ui for preact",
   "main": "lib/index.js",
   "scripts": {
     "tsc": "tsc",
+    "preinstall": "sh preinstall.sh",
+    "deploy": "sh deploy-docs.sh",
     "start": "f2e start",
+    "build": "f2e build",
     "test": "node test"
   },
   "repository": {
@@ -21,7 +24,11 @@
   "bugs": {
     "url": "https://github.com/element-preact/element-preact/issues"
   },
-  "files": ["lib/**", "src/**", "site/**"],
+  "files": [
+    "lib/**",
+    "src/**",
+    "site/**"
+  ],
   "module": "lib/src/index.js",
   "typings": "lib/src/index.d.ts",
   "homepage": "https://github.com/element-preact/element-preact#readme",

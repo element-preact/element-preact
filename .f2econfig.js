@@ -5,7 +5,11 @@ module.exports = {
     build,
     gzip: true,
     useLess: true,
-    buildFilter: pathname => !pathname || /(src(\/index|\/lib)|css(\/index)|docs|site(\/index)|index)\b/.test(pathname),
+    buildFilter: build
+        ?
+        pathname => !pathname || /(src|lib|css|docs|site|index)/.test(pathname)
+        :
+        pathname => !pathname || /(src(\/index|\/lib)|css(\/index)|docs|site(\/index)|index)\b/.test(pathname),
     middlewares: [
         {
             middleware: 'rollup',
@@ -23,5 +27,6 @@ module.exports = {
                 }
             }
         }
-    ]
+    ],
+    output: require('path').join(__dirname, './output')
 }

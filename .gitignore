@@ -63,3 +63,4 @@ typings/
 db/
 .rpt2_cache/
 lib/
+output/
