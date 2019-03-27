@@ -9,7 +9,7 @@ module.exports = {
         ?
         pathname => !pathname || /(src|lib|css|docs|site|index)/.test(pathname)
         :
-        pathname => !pathname || /(src(\/index|\/lib)|css(\/index)|docs|site(\/index)|index)\b/.test(pathname),
+        pathname => !pathname || /(src(\/index)|css(\/index)|docs|site(\/index|\/lib)|index)\b/.test(pathname),
     middlewares: [
         {
             middleware: 'rollup',

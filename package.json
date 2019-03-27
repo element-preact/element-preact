@@ -1,6 +1,6 @@
 {
   "name": "element-preact",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "element ui for preact",
   "main": "lib/index.js",
   "scripts": {

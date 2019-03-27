@@ -23,6 +23,7 @@ const NAV_GROUPS: NavGroup[]  = [
         title: 'Form',
         list: [
             { title: 'Radio 单选框', key: 'radio' },
+            { title: 'Checkbox 多选框', key: 'checkbox' },
         ]
     }
 ]
