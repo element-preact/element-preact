@@ -1,6 +1,6 @@
 import { h, VNode } from 'preact';
 import Component from '../libs/Component';
-// import {Component, PropTypes, View, Transition} from '../../libs'
+// import {View, Transition} from '../../libs'
 
 type State = {
     value: boolean | number | string,
@@ -78,7 +78,7 @@ export default class Switch extends Component<Props, State> {
         this.refs.core.style.backgroundColor = newColor;
     }
 
-    setFocus() {
+    setFocus() { 
         if (this.props.allowFocus) {
             this.refs.input.focus();
         }

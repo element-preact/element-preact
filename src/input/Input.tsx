@@ -8,8 +8,8 @@ type State = {
     textareaStyle: { resize: string, height?: string }
 }
 
-
 type Props = {
+    ref?: (item: any) => void
     type?: "text" | "textarea"
     icon?: TypeIcon
     disabled?: boolean
@@ -34,9 +34,12 @@ type Props = {
     onFocus?: EventListener
     onBlur?: EventListener
     onChange?: (value: any) => void
-    onIconClick?: EventListener
-    onMouseEnter?: EventListener
-    onMouseLeave?: EventListener
+    onIconClick?: Function
+    onMouseEnter?: (e?: MouseEvent) => void
+    onMouseLeave?: (e?: MouseEvent) => void
+    onMouseDown?: (e?: MouseEvent) => void
+    onKeyUp?: (e?: KeyboardEvent) => void
+    onKeyDown?: (e?: KeyboardEvent) => void
 
     autocomplete?: 'off'
     inputSelect?: (value: any) => void
@@ -140,6 +143,7 @@ export default class extends Component<Props, State> {
 
     input: HTMLInputElement | HTMLTextAreaElement
     refInput = (input: any) => {
+        this.props.ref && this.props.ref(input)
         this.input = input
     }
     render() {

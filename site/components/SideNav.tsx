@@ -26,6 +26,13 @@ const NAV_GROUPS: NavGroup[]  = [
             { title: 'Checkbox 多选框', key: 'checkbox' },
             { title: 'Input 输入框', key: 'input' },
             { title: 'Input Number 计数器', key: 'input-number' },
+            { title: 'Rate 评分', key: 'rate' },
+        ]
+    },
+    {
+        title: 'Data',
+        list: [
+            { title: 'Badge 标记', key: 'badge' },
         ]
     },
     {

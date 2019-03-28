@@ -18,57 +18,18 @@ export default class Transition extends Component<Props, {
     if (props.children[0]) {
       const { attributes, nodeName, children } = props.children[0]
       this.state = {
-        children: this.enhanceChildren(nodeName, Object.assign({ children }, attributes))
-      }
-    }
-    this.didEnter = this.didEnter.bind(this);
-    this.didLeave = this.didLeave.bind(this);
-  }
-
-  componentWillReceiveProps(nextProps: Props) {
-    const children = this.props.children[0]
-    const nextChildren = nextProps.children[0]
-
-    if (!nextProps.name) {
-      this.setState({
-        children: nextChildren
-      });
-      return;
-    }
-
-    if (this.isViewComponent(nextChildren)) {
-      this.setState({
-        children: this.enhanceChildren(nextChildren, { show: children ? children.props.show : true })
-      })
-    } else {
-      if (nextChildren) {
-        this.setState({
-          children: this.enhanceChildren(nextChildren)
-        })
+        children: this.enhanceChildren(nodeName, Object.assign({}, attributes, { children }))
       }
     }
   }
-
-  componentDidUpdate(preProps: Props) {
-    if (!this.props.name) return;
-
-    const children = this.props.children[0]
-    const preChildren = preProps.children[0]
-
-    if (this.isViewComponent(children)) {
-      if ((!preChildren || !preChildren.props.show) && children.props.show) {
-        this.toggleVisible();
-      } else if (preChildren && preChildren.props.show && !children.props.show) {
-        this.toggleHidden();
-      }
-    } else {
-      if (!preChildren && children) {
-        this.toggleVisible();
-      } else if (preChildren && !children) {
-        this.toggleHidden();
+  componentWillReceiveProps(props: Props) {
+    const _children = this.props.children[0]
+    if (props.children[0]) {
+      const { attributes, nodeName, children } = props.children[0]
+      this.state = {
+        children: this.enhanceChildren(nodeName, Object.assign({}, attributes, { children, show: _children ? _children['attributes'].show : true }))
       }
     }
-
   }
 
   el: any
@@ -90,7 +51,8 @@ export default class Transition extends Component<Props, {
   }
 
   isViewComponent(element) {
-    return element && element.nodeName instanceof View
+    console.log(element.nodeName)
+    return element && element.nodeName === View
   }
 
   /* css animation fix when animation applyied to .{action} instanceof .{action}-active */
@@ -118,7 +80,7 @@ export default class Transition extends Component<Props, {
     element.classList.remove(action, active);
   }
 
-  didEnter(e: Event) {
+  didEnter = (e: Event) => {
     const childDOM = this.el
 
     if (!e || e.target !== childDOM) return;
@@ -134,7 +96,7 @@ export default class Transition extends Component<Props, {
     onAfterEnter && onAfterEnter(e);
   }
 
-  didLeave(e: Event) {
+  didLeave = (e: Event) => {
     const childDOM = this.el
     if (!e || e.target !== childDOM) return;
 

@@ -4,7 +4,8 @@ import { Scrollbar } from '../scrollbar';
 import Tag from '../tag'
 import Input from '../input'
 import Popper from 'popper.js';
-import { TypeIcon, TypeSize } from '../interfaces'
+import Transition from '../libs/transition'
+import View from '../libs/view'
 
 const sizeMap: { [size: string]: number } = {
     'large': 42,
@@ -25,7 +26,7 @@ type Props = {
     filterMethod?: (value: any) => void
     multiple?: boolean
     placeholder?: string
-    onChange?: (values: any[], value: any) => void
+    onChange?: (values: any, value?: any) => void
     onVisibleChange?: (visible: boolean) => void
     onRemoveTag?: (value: any) => void
     onClear?: () => void
@@ -57,7 +58,13 @@ type State = {
 export default class extends Component<Props, State> {
     state: State
     deleteTag: any;
-    handleIconClick: any;
+    handleIconClick = (event: Event) => {
+        if (this.iconClass().indexOf('circle-close') > -1) {
+            this.deleteSelected(event);
+        } else {
+            this.toggleMenu();
+        }
+    }
     onMouseDown: any;
     onMouseEnter: any;
     onMouseLeave: any;
@@ -67,7 +74,7 @@ export default class extends Component<Props, State> {
 
     getChildContext() {
         return {
-            component: this
+            component: this.props
         }
     }
 
@@ -250,7 +257,7 @@ export default class extends Component<Props, State> {
 
         return option.hitState;
     }
-    resetInputState(e: KeyboardEvent) {
+    resetInputState(e: any) {
         if (e.keyCode !== 8) {
             this.toggleLastOptionHitState(false);
         }
@@ -259,7 +266,7 @@ export default class extends Component<Props, State> {
             inputLength: this.input.value.length * 15 + 20
         });
     }
-    deletePrevTag(e: KeyboardEvent) {
+    deletePrevTag(e: any) {
         if (e.target instanceof HTMLInputElement && e.target.value.length <= 0 && !this.toggleLastOptionHitState()) {
             const { selected } = this.state;
             selected.pop();
@@ -356,13 +363,211 @@ export default class extends Component<Props, State> {
         });
     }
 
+    deleteSelected(e: Event) {
+        e.stopPropagation();
+
+        if (this.state.selectedLabel != '') {
+            this.setState({
+                selected: {},
+                selectedLabel: '',
+                visible: false
+            });
+
+            this.context.form && this.context.form.onFieldChange();
+
+            if (this.props.onChange) {
+                this.props.onChange('');
+            }
+
+            if (this.props.onClear) {
+                this.props.onClear();
+            }
+        }
+    }
+    showCloseIcon(): boolean {
+        let criteria = this.props.clearable && this.state.inputHovering && !this.props.multiple && this.state.options.indexOf(this.state.selected) > -1;
+
+        if (!this.root) return false;
+
+        let icon = this.root.querySelector('.el-input__icon');
+
+        if (icon) {
+            if (criteria) {
+                icon.addEventListener('click', this.deleteSelected.bind(this));
+                icon.classList.add('is-show-close');
+            } else {
+                icon.removeEventListener('click', this.deleteSelected.bind(this));
+                icon.classList.remove('is-show-close');
+            }
+        }
+
+        return criteria;
+    }
+    iconClass(): string {
+        return this.showCloseIcon() ? 'circle-close' : (this.props.remote && this.props.filterable ? '' : `caret-top ${this.state.visible ? 'is-reverse' : ''}`);
+    }
+    emptyText() {
+        const { loading, filterable } = this.props;
+        const { voidRemoteQuery, options, filteredOptionsCount } = this.state;
+
+        if (loading) {
+            return '加载中...';
+        } else {
+            if (voidRemoteQuery) {
+                this.state.voidRemoteQuery = false;
+
+                return false;
+            }
+
+            if (filterable && filteredOptionsCount === 0) {
+                return '无匹配数据';
+            }
+
+            if (options.length === 0) {
+                return '无匹配数据';
+            }
+        }
+
+        return null;
+    }
+
     root: HTMLDivElement
+    timeout: NodeJS.Timer
     render () {
         const { multiple, size, disabled, filterable, loading } = this.props;
         const { selected, inputWidth, inputLength, query, selectedLabel, visible, options, filteredOptionsCount, currentPlaceholder } = this.state;
 
         return <div ref={root => this.root = root} style={this.style()} className={this.className('el-select')}>
+            {multiple && <div ref={tags => this.tags = tags} className="el-select__tags" onClick={this.toggleMenu.bind(this)} style={{
+                maxWidth: inputWidth - 32
+            }}>
+                {
+                    selected.map(el => {
+                        return (
+                            <Tag
+                                type="primary"
+                                key={el.props.value}
+                                hit={el.hitState}
+                                closable={!disabled}
+                                closeTransition={true}
+                                onClose={this.deleteTag.bind(this, el)}
+                            >
+                                <span className="el-select__tags-text">{el.currentLabel()}</span>
+                            </Tag>
+                        )
+                    })
+                }
+                {
+                    filterable && (
+                        <input
+                            ref={input => this.input = input}
+                            type="text"
+                            className={this.classNames('el-select__input', size && `is-${size}`)}
+                            style={{ width: inputLength, maxWidth: inputWidth - 42 }}
+                            disabled={disabled}
+                            placeholder={query}
+                            onKeyUp={this.managePlaceholder.bind(this)}
+                            onKeyDown={e => {
+                                this.resetInputState(e);
+                                switch (e.keyCode) {
+                                    case 27:
+                                        this.setState({ visible: false });
+                                        e.preventDefault();
+                                        break;
+                                    case 8:
+                                        this.deletePrevTag(e);
+                                        break;
+                                    case 13:
+                                        this.selectOption();
+                                        e.preventDefault();
+                                        break;
+                                    case 38:
+                                        this.navigateOptions('prev');
+                                        e.preventDefault();
+                                        break;
+                                    case 40:
+                                        this.navigateOptions('next');
+                                        e.preventDefault();
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }}
+                            onChange={e => {
+                                clearTimeout(this.timeout);
 
+                                this.timeout = setTimeout(() => {
+                                    this.setState({
+                                        query: this.state.value
+                                    });
+                                }, 300);
+
+                                this.state.value = e.target['value'];
+                            }}
+                        />
+                    )
+                }
+            </div>}
+            <Input
+                ref={r => this.reference = r}
+                value={selectedLabel}
+                type="text"
+                placeholder={currentPlaceholder}
+                name="name"
+                size={'small'}
+                disabled={disabled}
+                readOnly={!filterable || multiple}
+                icon={this.iconClass() || undefined}
+                onChange={value => this.setState({ selectedLabel: value })}
+                onIconClick={this.handleIconClick}
+                onMouseDown={this.onMouseDown}
+                onMouseEnter={this.onMouseEnter}
+                onMouseLeave={this.onMouseLeave}
+                onKeyUp={this.debouncedOnInputChange}
+                onKeyDown={e => {
+                    switch (e.keyCode) {
+                        case 9:
+                        case 27:
+                            this.setState({ visible: false });
+                            e.preventDefault();
+                            break;
+                        case 13:
+                            this.selectOption();
+                            e.preventDefault();
+                            break;
+                        case 38:
+                            this.navigateOptions('prev');
+                            e.preventDefault();
+                            break;
+                        case 40:
+                            this.navigateOptions('next');
+                            e.preventDefault();
+                            break;
+                        default:
+                            break;
+                    }
+                }}
+            />
+            <Transition name="el-zoom-in-top" onEnter={this.onEnter} onAfterLeave={this.onAfterLeave}>
+                <View show={visible && this.emptyText() !== false}>
+                    <div
+                        ref={popper => this.popper = popper}
+                        className={this.classNames('el-select-dropdown', { 'is-multiple': multiple })}
+                        style={{ minWidth: inputWidth }}
+                    >
+                        <View show={options.length > 0 && filteredOptionsCount > 0 && !loading}>
+                            <Scrollbar
+                                viewComponent="ul"
+                                wrapClass="el-select-dropdown__wrap"
+                                viewClass="el-select-dropdown__list"
+                            >
+                                {this.props.children}
+                            </Scrollbar>
+                        </View>
+                        {this.emptyText() && <p className="el-select-dropdown__empty">{this.emptyText()}</p>}
+                    </div>
+                </View>
+            </Transition>
         </div>
     }
 }
