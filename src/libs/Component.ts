@@ -3,7 +3,7 @@ import classNames from './classnames'
 
 export default abstract class <P = {}, S = {}> extends Preact.Component<P & { className?: string, style?: any }, S> {
     classNames = classNames.bind(this)
-    
+    refs
     className (...args: any[]) {
         return classNames(args.concat(this.props.className))
     }

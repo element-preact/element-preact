@@ -44,13 +44,11 @@ constructor(props) {
 
 handleClose(tag) {
   const { tags } = this.state;
-
-  tags.splice(tags.map(el => el.key).indexOf(tag.key), 1);
-
-  this.setState({ tag });
+  this.setState({ tags: tags.filter(t => t.key != tag.key) });
 }
 
 render() {
+  console.log(this.state.tags)
   return (
     <div>
       {
