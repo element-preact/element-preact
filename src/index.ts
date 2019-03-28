@@ -6,7 +6,9 @@ import Checkbox from './checkbox'
 import Input from './input'
 import { Scrollbar } from './scrollbar'
 import Tag from './tag'
-import Switch from './switch'
+// import Switch from './switch'
+import Rate from './rate'
+import Badge from './badge'
 import Component from './libs/Component'
 
 export {
@@ -19,5 +21,7 @@ export {
     Input,
     Scrollbar,
     Tag,
-    Switch
+    // Switch,
+    Rate,
+    Badge
 }
