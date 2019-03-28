@@ -7,6 +7,7 @@ import Input from './input'
 import Select from './select'
 import { Scrollbar } from './scrollbar'
 import Tag from './tag'
+import Switch from './switch'
 import Component from './libs/Component'
 import Transition from './libs/transition'
 import View from './libs/view'
@@ -24,6 +25,6 @@ export {
     Select,
     Scrollbar,
     Tag,
-    Transition,
-    View
+    View,
+    Switch
 }
