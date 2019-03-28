@@ -1,11 +1,12 @@
 import { h, VNode } from 'preact';
 import Component from '../libs/Component';
-// import {View, Transition} from '../../libs'
+import Transition from '../libs/transition'
+import View from '../libs/View'
 
 type State = {
     value: boolean | number | string,
     coreWidth: number,
-    buttonStyle: Object
+    buttonStyle: any
 };
 type Value = number | string | boolean;
 type Props = {
@@ -74,13 +75,13 @@ export default class Switch extends Component<Props, State> {
     setBackgroundColor() {
         let newColor = this.state.value === this.props.onValue ? this.props.onColor : this.props.offColor;
 
-        this.refs.core.style.borderColor = newColor;
-        this.refs.core.style.backgroundColor = newColor;
+        this.core.style.borderColor = newColor;
+        this.core.style.backgroundColor = newColor;
     }
 
     setFocus() { 
         if (this.props.allowFocus) {
-            this.refs.input.focus();
+            this.input.focus();
         }
     }
 
@@ -117,7 +118,10 @@ export default class Switch extends Component<Props, State> {
         this.setState({ buttonStyle });
     }
 
+    core: HTMLDivElement
+    input: HTMLDivElement
     render() {
+        
         const { name, disabled, onText, offText, onValue, onIconClass, offIconClass, allowFocus } = this.props;
         const { value, coreWidth, buttonStyle } = this.state;
 
@@ -141,14 +145,14 @@ export default class Switch extends Component<Props, State> {
                     type="checkbox"
                     checked={value === onValue}
                     name={name}
-                    ref="input"
+                    ref={input => this.input = input}
                     disabled={disabled}
                     onChange={this.handleChange.bind(this)}
                     onFocus={this.handleFocus.bind(this)}
                     onBlur={this.handleBlur.bind(this)}
                 />
 
-                <span className="el-switch__core" ref="core" style={{ 'width': coreWidth + 'px' }}>
+                <span className="el-switch__core" ref={core => this.core = core} style={{ 'width': coreWidth + 'px' }}>
                     <span className="el-switch__button" style={Object.assign({}, buttonStyle)} onClick={this.setFocus.bind(this)} />
                 </span>
 

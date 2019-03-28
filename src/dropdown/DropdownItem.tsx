@@ -1,36 +1,33 @@
 /* @flow */
 
-import React from 'react';
-import { Component, PropTypes } from '../../libs';
+import { h, VNode } from 'preact';
+import Component from '../libs/Component';
 
-export default class DropdownItem extends Component {
-  handleClick(): void {
-    this.context.component.handleMenuItemClick(this.props.command, this);
-  }
-
-  render(): React.DOM {
-    const { disabled, divided } = this.props;
-
-    return (
-      <li
-        style={this.style()}
-        className={this.className('el-dropdown-menu__item', {
-          'is-disabled': disabled,
-          'el-dropdown-menu__item--divided': divided
-        })} onClick={this.handleClick.bind(this)}
-      >
-        { this.props.children }
-      </li>
-    )
-  }
+type Props = {
+    command?: string,
+    disabled?: boolean,
+    divided?: boolean,
 }
 
-DropdownItem.contextTypes = {
-  component: PropTypes.any
-};
+export default class DropdownItem extends Component<Props> {
+    handleClick(): void {
+        this.context.component.handleMenuItemClick(this.props.command, this);
+    }
 
-DropdownItem.propTypes = {
-  command: PropTypes.string,
-  disabled: PropTypes.bool,
-  divided: PropTypes.bool,
-};
+    render() {
+        const { disabled, divided } = this.props;
+
+        return (
+            <li
+                style={this.style()}
+                className={this.className('el-dropdown-menu__item', {
+                    'is-disabled': disabled,
+                    'el-dropdown-menu__item--divided': divided
+                })} onClick={this.handleClick.bind(this)}
+            >
+                {this.props.children}
+            </li>
+        )
+    }
+}
+

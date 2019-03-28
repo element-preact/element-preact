@@ -1,7 +1,8 @@
 /* @flow */
 import { h, VNode } from 'preact'
 import Component from '../libs/Component'
-import {  PropTypes, Transition, View } from '../../libs';
+import View from '../libs/View'
+import Transition from '../libs/Transition'
 
 type State = {
   showPopper: boolean

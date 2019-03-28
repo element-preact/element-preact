@@ -1,9 +1,8 @@
 /* @flow */
 
-import React from 'react';
-import ReactDOM from 'react-dom';
-import ClickOutside from 'react-click-outside';
-import { Component, PropTypes } from '../../libs';
+import { h, VNode } from 'preact';
+import Component from '../libs/Component';
+import {TypeColor, TypeSize} from '../interfaces'
 
 import Button from '../button';
 
@@ -11,10 +10,24 @@ type State = {
   visible: boolean
 };
 
-class Dropdown extends Component {
-  state: State;
+type Props = {
+    menu?: PropTypes.node.isRequired,
+    type?: TypeColor
+    size?: TypeSize
+    trigger?: 'hover' | 'click'
+    menuAlign?: 'start'| 'end'
+    splitButton?: boolean,
+    hideOnClick?: boolean,
+    onClick?: () => void
+    onCommand?: () => void
+    onVisibleChange?: (isVisible: boolean) => void
+}
 
-  constructor(props: Object) {
+class Dropdown extends Component<Props, State> {
+  state: State;
+  timeout;
+
+  constructor(props: Props) {
     super(props);
 
     this.state = {
@@ -32,7 +45,7 @@ class Dropdown extends Component {
     this.initEvent();
   }
 
-  componentWillUpdate(props: Object, state: State): void {
+  componentWillUpdate(props: Props, state: State): void {
     if (state.visible != this.state.visible) {
       this.refs.dropdown.onVisibleChange(state.visible);
 
@@ -93,7 +106,7 @@ class Dropdown extends Component {
     }
   }
 
-  render(): React.DOM {
+  render() {
     const { splitButton, type, size, menu } = this.props;
 
     return (
@@ -108,10 +121,10 @@ class Dropdown extends Component {
                 <i className="el-dropdown__icon el-icon-caret-bottom"></i>
               </Button>
             </Button.Group>
-          ) : React.cloneElement(this.props.children, { ref: 'default' })
+          ) : h(this.props.children, { ref: 'default' })
         }
         {
-          React.cloneElement(menu, {
+          h(menu, {
             ref: 'dropdown'
           })
         }
@@ -123,19 +136,6 @@ class Dropdown extends Component {
 Dropdown.childContextTypes = {
   component: PropTypes.any
 };
-
-Dropdown.propTypes = {
-  menu: PropTypes.node.isRequired,
-  type: PropTypes.string,
-  size: PropTypes.string,
-  trigger: PropTypes.oneOf(['hover', 'click']),
-  menuAlign: PropTypes.oneOf(['start', 'end']),
-  splitButton: PropTypes.bool,
-  hideOnClick: PropTypes.bool,
-  onClick: PropTypes.func,
-  onCommand: PropTypes.func,
-  onVisibleChange: PropTypes.func
-}
 
 Dropdown.defaultProps = {
   hideOnClick: true,

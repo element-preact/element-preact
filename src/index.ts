@@ -7,16 +7,17 @@ import Input from './input'
 import Select from './select'
 import { Scrollbar } from './scrollbar'
 import Tag from './tag'
-// import Switch from './switch'
+import Switch from './switch'
 import Rate from './rate'
 import Badge from './badge'
+import Alert from './alert'
 import Component from './libs/Component'
 import Transition from './libs/transition'
 import View from './libs/view'
 import AutoComplete from './auto-complete'
 
 export {
-    AutoComplete,
+    // AutoComplete,
     Component,
     Layout,
     Button,
@@ -24,12 +25,13 @@ export {
     Radio,
     Checkbox,
     Input,
-    Select,
+    // Select,
     Scrollbar,
     Tag,
-    // Switch,
+    Switch,
     Rate,
     Badge,
     Transition,
-    View
+    View,
+    Alert
 }
