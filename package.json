@@ -46,5 +46,8 @@
     "rollup-plugin-node-resolve": "^4.0.1",
     "rollup-plugin-typescript2": "^0.20.1",
     "typescript": "^3.3.4000"
+  },
+  "dependencies": {
+    "popper.js": "^1.14.7"
   }
 }

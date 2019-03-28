@@ -104,21 +104,21 @@ handleClose(index) {
 
 showInput() {
   this.setState({ inputVisible: true }, () => {
-    this.refs.saveTagInput.focus();
+    this.saveTagInput.focus();
   });
 }
 
 handleInputConfirm() {
   let inputValue = this.state.inputValue;
-
+  let { dynamicTags = [] } = this.state
   if (inputValue) {
-    this.state.dynamicTags.push(inputValue);
+    dynamicTags = dynamicTags.concat(inputValue)
   }
-
-  this.state.inputVisible = false;
-  this.state.inputValue = '';
-
-  this.forceUpdate();
+  this.setState({
+    inputVisible: false,
+    inputValue: '',
+    dynamicTags
+  })
 }
 
 render() {
@@ -135,19 +135,21 @@ render() {
           )
         })
       }
-      {
-        this.state.inputVisible ? (
-          <Input
-            className="input-new-tag"
-            value={this.state.inputValue}
-            ref="saveTagInput"
-            size="mini"
-            onChange={this.onChange.bind(this)}
-            onKeyUp={this.onKeyUp.bind(this)}
-            onBlur={this.handleInputConfirm.bind(this)}
-          />
-        ) : <Button className="button-new-tag" size="small" onClick={this.showInput.bind(this)}>+ New Tag</Button>
-      }
+      <Input
+        className="input-new-tag"
+        style={this.style(this.state.inputVisible || {
+          display: 'none'
+        })}
+        value={this.state.inputValue}
+        ref={input => this.saveTagInput = input}
+        size="mini"
+        onChange={this.onChange.bind(this)}
+        onKeyUp={this.onKeyUp.bind(this)}
+        onBlur={this.handleInputConfirm.bind(this)}
+      />
+      <Button className="button-new-tag" style={this.style(this.state.inputVisible && {
+          display: 'none'
+      })} size="small" onClick={this.showInput.bind(this)}>+ New Tag</Button>
     </div>
   )
 }

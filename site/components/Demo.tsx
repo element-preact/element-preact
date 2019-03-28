@@ -44,7 +44,7 @@ export default class extends Component<{
     renderSource = () => {
         const $ = { createElement: h, vnode: null }
         const args = ['context', 'React', 'Component']
-        const argv = [this, $, Component]
+        const argv = [this, $, Element.Component]
         for (const key in Element) {
             args.push(key)
             argv.push(Element[key])
