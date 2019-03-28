@@ -25,6 +25,7 @@ export {
     Select,
     Scrollbar,
     Tag,
+    Transition,
     View,
     Switch
 }
