@@ -1,4 +1,4 @@
-import { h, VNode } from 'preact'
+import { h, VNode, cloneElement } from 'preact'
 import Component from '../libs/Component'
 
 type Color = string
@@ -64,7 +64,7 @@ export default class CheckboxGroup extends Component<Props, State> {
             <div style={this.style()} className={this.className("el-checkbox-group")}>
                 {node.children.map((item, index) => {
                     const props = Object.assign({}, item['attributes'])
-                    return h(item['nodeName'], Object.assign({}, props, {
+                    return cloneElement(item['nodeName'], Object.assign({}, props, {
                         key: index,
                         checked:
                             props.checked ||

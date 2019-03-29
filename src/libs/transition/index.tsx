@@ -1,4 +1,4 @@
-import { h, VNode } from 'preact';
+import { h, VNode, cloneElement } from 'preact';
 import Component from '../Component';
 import View from '../view'
 
@@ -22,19 +22,56 @@ export default class Transition extends Component<Props, {
       }
     }
   }
-  componentWillReceiveProps(props: Props) {
-    const _children = this.props.children[0]
-    if (props.children[0]) {
-      const { attributes, nodeName, children } = props.children[0]
-      this.state = {
-        children: this.enhanceChildren(nodeName, Object.assign({}, attributes, { children, show: _children ? _children['attributes'].show : true }))
+  componentWillReceiveProps(nextProps: Props) {
+    const children = this.props.children[0]
+    const nextChildren = nextProps.children[0]
+
+    if (!nextProps.name) {
+      this.setState({
+        children: nextChildren
+      });
+      return;
+    }
+
+    if (this.isViewComponent(nextChildren)) {
+      this.setState({
+        children: this.enhanceChildren(nextChildren.nodeName, { show: children ? children.props.show : true })
+      })
+    } else {
+      if (nextChildren) {
+        this.setState({
+          children: this.enhanceChildren(nextChildren.nodeName)
+        })
       }
     }
   }
 
   el: any
-  enhanceChildren(children, props?) {
-    return h(children.nodeName, Object.assign({ ref: (el) => { this.el = el } }, props))
+  enhanceChildren(nodeName, props?) {
+    return h(nodeName, Object.assign({ ref: (el) => { this.el = el } }, props), props.children)
+  }
+
+  componentDidUpdate(preProps) {
+    console.log(this.props.name)
+    
+    if (!this.props.name) return;
+    const children = this.props.children[0]
+    const preChildren = preProps.children[0]
+
+    if (this.isViewComponent(children)) {
+      if ((!preChildren || !preChildren.attributes.show) && children.attributes.show) {
+        this.toggleVisible();
+      } else if (preChildren && preChildren.attributes.show && !children.attributes.show) {
+        this.toggleHidden();
+      }
+    } else {
+      if (!preChildren && children) {
+        this.toggleVisible();
+      } else if (preChildren && !children) {
+        this.toggleHidden();
+      }
+    }
+
   }
 
   get transitionClass() {
@@ -51,7 +88,6 @@ export default class Transition extends Component<Props, {
   }
 
   isViewComponent(element) {
-    console.log(element.nodeName)
     return element && element.nodeName === View
   }
 
@@ -183,6 +219,10 @@ export default class Transition extends Component<Props, {
     })
   }
 
+  componentDidMount () {
+    console.log(this.el)
+  }
+  
   render() {
     return this.state.children || null;
   }

@@ -48,7 +48,6 @@ handleClose(tag) {
 }
 
 render() {
-  console.log(this.state.tags)
   return (
     <div>
       {

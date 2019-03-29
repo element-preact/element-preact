@@ -1,4 +1,4 @@
-import { h } from 'preact';
+import { h, cloneElement } from 'preact';
 import Component from '../libs/Component';
 
 import { addResizeListener, removeResizeListener } from '../libs/utils/resize-event';
@@ -104,7 +104,7 @@ export class Scrollbar extends Component<Props, State> {
       }
     }
 
-    const view = h(viewComponent, {
+    const view = h(viewComponent || 'div', {
       className: this.classNames('el-scrollbar__view', viewClass),
       style: viewStyle,
       ref: (el: HTMLDivElement) => this.resizeDom = el

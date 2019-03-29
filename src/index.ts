@@ -17,7 +17,7 @@ import View from './libs/view'
 import AutoComplete from './auto-complete'
 
 export {
-    // AutoComplete,
+    AutoComplete,
     Component,
     Layout,
     Button,
@@ -25,7 +25,7 @@ export {
     Radio,
     Checkbox,
     Input,
-    // Select,
+    Select,
     Scrollbar,
     Tag,
     Switch,
